@@ -8,6 +8,14 @@ import os
 
 st.set_page_config(page_title="Nasdaq Gap-Up Dashboard", layout="wide")
 
+# Disclaimer Section in UI
+st.markdown("""
+⚠️ **Disclaimer:** This dashboard is for educational purposes only and is **not intended for real trading**. 
+If you choose to use it for trading, you do so at your own discretion and are fully responsible for your actions. 
+By using this page, you accept that the owners of this content are **not liable for any losses or issues of any kind**, 
+and you release the owners from all forms of liability at all times and locations.
+""")
+
 st.title("📈 Nasdaq Gap-Up Prediction Dashboard")
 
 # Sidebar controls
@@ -44,7 +52,7 @@ st.plotly_chart(fig_candle, use_container_width=True)
 st.subheader("Prediction Table")
 st.dataframe(data)
 
-# PDF generation
+# PDF generation with Disclaimer included
 def generate_pdf(df, heatmap_fig, candle_fig):
     tmp_heatmap = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
     tmp_candle = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
@@ -55,6 +63,10 @@ def generate_pdf(df, heatmap_fig, candle_fig):
     pdf.add_page()
     pdf.set_font("Arial", 'B', 16)
     pdf.cell(200, 10, "Nasdaq Gap-Up Prediction Report", ln=True, align='C')
+    pdf.set_font("Arial", '', 10)
+    pdf.multi_cell(0, 5, "⚠️ Disclaimer: This report is for educational purposes only and is not intended for real trading. If you choose to use it for trading, you do so at your own discretion and are fully responsible for your actions. By using this report, you accept that the owners of this content are not liable for any losses or issues of any kind, and you release the owners from all forms of liability at all times and locations.")
+    pdf.ln(5)
+
     pdf.set_font("Arial", '', 12)
     for idx, row in df.iterrows():
         pdf.cell(200, 10, f"{row['Symbol']}: Gap-Up Probability {row['Gap-Up Probability']}% | RSI {row['RSI']} | MACD {row['MACD']}", ln=True)
